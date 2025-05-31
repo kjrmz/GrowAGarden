@@ -1,0 +1,157 @@
+-- Fullscreen Loading with Snow + Pacman - Made by Ignite Scripts (Final Version)
+local TweenService = game:GetService("TweenService")
+local RunService = game:GetService("RunService")
+
+local gui = Instance.new("ScreenGui")
+gui.IgnoreGuiInset = true
+gui.ResetOnSpawn = false
+gui.Name = "FancyLoadingGUI"
+gui.Parent = game:GetService("CoreGui")
+
+local bg = Instance.new("Frame", gui)
+bg.Size = UDim2.new(1, 0, 1, 0)
+bg.BackgroundColor3 = Color3.new(0, 0, 0)
+bg.Name = "Background"
+
+-- Snow Effect
+for i = 1, 75 do
+	local snow = Instance.new("ImageLabel")
+	snow.Parent = bg
+	snow.Size = UDim2.new(0, math.random(3, 6), 0, math.random(3, 6))
+	snow.Position = UDim2.new(math.random(), 0, math.random(), 0)
+	snow.BackgroundTransparency = 1
+	snow.Image = "rbxassetid://6023426915"
+	snow.ImageColor3 = Color3.new(1, 1, 1)
+	snow.ZIndex = 0
+
+	task.spawn(function()
+		while snow and snow.Parent do
+			local y = snow.Position.Y.Scale + math.random(1, 4) / 200
+			if y > 1 then y = 0 end
+			snow.Position = UDim2.new(snow.Position.X.Scale, 0, y, 0)
+			wait(0.03)
+		end
+	end)
+end
+
+-- Loading Label
+local loadingText = Instance.new("TextLabel", bg)
+loadingText.AnchorPoint = Vector2.new(0.5, 0.4)
+loadingText.Position = UDim2.new(0.5, 0, 0.4, 0)
+loadingText.Size = UDim2.new(0.6, 0, 0.1, 0)
+loadingText.BackgroundTransparency = 1
+loadingText.Text = "Loading Script: 0%"
+loadingText.Font = Enum.Font.GothamBold
+loadingText.TextColor3 = Color3.new(1, 1, 1)
+loadingText.TextScaled = true
+
+-- Progress Bar
+local barBG = Instance.new("Frame", bg)
+barBG.AnchorPoint = Vector2.new(0.5, 0.5)
+barBG.Position = UDim2.new(0.5, 0, 0.55, 0)
+barBG.Size = UDim2.new(0.6, 0, 0.05, 0)
+barBG.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+barBG.BorderSizePixel = 0
+Instance.new("UICorner", barBG).CornerRadius = UDim.new(0, 6)
+
+local barFill = Instance.new("Frame", barBG)
+barFill.Size = UDim2.new(0, 0, 1, 0)
+barFill.BackgroundColor3 = Color3.fromRGB(255, 255, 0)
+barFill.BorderSizePixel = 0
+Instance.new("UICorner", barFill).CornerRadius = UDim.new(0, 6)
+
+-- Credits
+local credit = Instance.new("TextLabel", bg)
+credit.AnchorPoint = Vector2.new(0.5, 1)
+credit.Position = UDim2.new(0.5, 0, 1, -30)
+credit.Size = UDim2.new(0.5, 0, 0.05, 0)
+credit.BackgroundTransparency = 1
+credit.Text = "Made by Ignite Scripts"
+credit.Font = Enum.Font.Gotham
+credit.TextColor3 = Color3.fromRGB(180, 180, 180)
+credit.TextScaled = true
+
+-- Pacman Frame (No Mouth)
+local pacman = Instance.new("Frame", bg)
+pacman.Size = UDim2.new(0, 30, 0, 30)
+pacman.Position = UDim2.new(0.2, 0, 0.7, 0)
+pacman.BackgroundColor3 = Color3.fromRGB(255, 255, 0)
+pacman.BorderSizePixel = 0
+pacman.ZIndex = 2
+Instance.new("UICorner", pacman).CornerRadius = UDim.new(1, 0)
+
+-- Dots for Pacman to eat
+local dots = {}
+for i = 1, 10 do
+	local dot = Instance.new("Frame", bg)
+	dot.Size = UDim2.new(0, 6, 0, 6)
+	dot.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+	dot.BorderSizePixel = 0
+	dot.Position = UDim2.new(0.25 + i * 0.045, 0, 0.715, 0)
+	dot.ZIndex = 1
+	table.insert(dots, dot)
+end
+
+-- Move Pacman smoothly and eat dots
+task.spawn(function()
+	while true do
+		-- Tween Pacman to the right
+		local tweenInfo = TweenInfo.new(3, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut)
+		local tween = TweenService:Create(pacman, tweenInfo, { Position = UDim2.new(0.7, 0, 0.7, 0) })
+		tween:Play()
+
+		-- Monitor dot collision during tween
+		local startTime = tick()
+		while tick() - startTime < 3 do
+			local pacX = pacman.AbsolutePosition.X + pacman.AbsoluteSize.X / 2
+
+			-- Check if Pacman eats a dot
+			for _, dot in pairs(dots) do
+				if dot.Visible then
+					local dotX = dot.AbsolutePosition.X + dot.AbsoluteSize.X / 2
+					if math.abs(pacX - dotX) < 15 then
+						dot.Visible = false
+					end
+				end
+			end
+			wait(0.05)
+		end
+
+		-- Reset Pacman and dots if needed
+		wait(0.5)
+		pacman.Position = UDim2.new(0.2, 0, 0.7, 0)
+
+		local allGone = true
+		for _, dot in pairs(dots) do
+			if dot.Visible then
+				allGone = false
+				break
+			end
+		end
+
+		-- If all dots are eaten, reset them
+		if allGone then
+			wait(1)
+			for _, dot in pairs(dots) do
+				dot.Visible = true
+			end
+		end
+	end
+end)
+
+-- Animate loading bar
+task.spawn(function()
+	local duration = 60
+	local steps = 100
+	for i = 1, steps do
+		local percent = i / steps
+		barFill.Size = UDim2.new(percent, 0, 1, 0)
+		loadingText.Text = string.format("Loading Script: %d%%", percent * 100)
+		wait(duration / steps)
+	end
+end)
+
+-- Remove GUI after 5 seconds
+task.delay(5000, function() 
+	gui:Destroy()
+end)
