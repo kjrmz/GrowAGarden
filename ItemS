@@ -48,7 +48,7 @@ titleFix.Parent = titleBar
 
 
 local titleLabel = Instance.new("TextLabel")
-titleLabel.Text = "Grow A Garden Item Stealer | Made By Ignite Scripts"
+titleLabel.Text = "Grow A Garden Item Stealer | Made By VerScripts"
 titleLabel.Size = UDim2.new(1, -120, 1, 0)
 titleLabel.Position = UDim2.new(0, 16, 0, 0)
 titleLabel.BackgroundTransparency = 1
@@ -73,7 +73,7 @@ controlsLayout.Parent = controlsFrame
 
 
 local minimizeButton = Instance.new("TextButton")
-minimizeButton.Text = "âˆ’"
+minimizeButton.Text = "ˆ"
 minimizeButton.Size = UDim2.new(0, 30, 0, 30)
 minimizeButton.BackgroundColor3 = Color3.fromRGB(52, 53, 65)
 minimizeButton.BorderSizePixel = 0
@@ -89,7 +89,7 @@ minCorner.Parent = minimizeButton
 
 
 local closeButton = Instance.new("TextButton")
-closeButton.Text = "Ã—"
+closeButton.Text = "—"
 closeButton.Size = UDim2.new(0, 30, 0, 30)
 closeButton.BackgroundColor3 = Color3.fromRGB(255, 59, 48)
 closeButton.BorderSizePixel = 0
